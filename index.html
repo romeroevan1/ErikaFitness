@@ -1,10 +1,10 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stride">
-<meta name="theme-color" content="#14303b"><link rel="manifest" href="ERmanifest.json"><link rel="apple-touch-icon" href="ERicon-180.png">
-<title>Stride</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Making Moves">
+<meta name="theme-color" content="#2a1740"><link rel="manifest" href="ERmanifest.json"><link rel="apple-touch-icon" href="ERicon-180.png">
+<title>Making Moves</title>
 <style>
-:root{--ink:#14303b;--bg:#f2f7f9;--card:#fff;--c1:#ff5a6e;--c2:#7ccf3a;--c3:#1fb5cc;--mut:#667f8b;--line:#dbe6eb}
+:root{--ink:#2a1740;--bg:#f8f4fc;--card:#fff;--c1:#ff4fa3;--c2:#ffd23f;--c3:#a66bff;--mut:#7a6a8c;--line:#e6dcf2}
 *{box-sizing:border-box}body{margin:0;font:16px/1.45 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom))}
 main{max-width:520px;margin:0 auto;padding:16px}
 h1{font-size:26px;margin:4px 0 0;letter-spacing:-.02em}h2{font-size:18px;margin:0 0 8px}
@@ -17,17 +17,17 @@ h1{font-size:26px;margin:4px 0 0;letter-spacing:-.02em}h2{font-size:18px;margin:
 .row:first-of-type{border-top:0}.row small{color:var(--mut);display:block}
 input[type=number]{width:96px;font:inherit;padding:8px;border:1px solid var(--line);border-radius:10px;text-align:right}
 button{font:inherit;border:0;border-radius:12px;padding:10px 14px;background:var(--ink);color:#fff}
-button.q{width:42px;padding:10px 0;background:var(--c3);font-weight:700}button.off{background:#e3edf1;color:var(--ink)}
+button.q{width:42px;padding:10px 0;background:var(--c3);font-weight:700}button.off{background:#ece4f6;color:var(--ink)}
 button.big{width:100%;margin-top:10px;padding:14px;background:var(--c2);color:var(--ink);font-weight:700}
-button.big.done{background:#e3edf1}
+button.big.done{background:#ece4f6}
 .ex{padding:10px 0;border-top:1px solid var(--line)}.ex b{display:block}.ex span{color:var(--mut);font-size:14px}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 4px;text-align:right;border-bottom:1px solid var(--line)}
-th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}tr.now{background:#e5f6f9;font-weight:700}
-.d{display:flex;gap:6px}.m{width:12px;height:12px;border-radius:50%;background:#e3edf1}.m.on{background:var(--c2)}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}tr.now{background:#f1eafc;font-weight:700}
+.d{display:flex;gap:6px}.m{width:12px;height:12px;border-radius:50%;background:#ece4f6}.m.on{background:var(--c3)}
 .wr{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-top:1px solid var(--line);border-radius:8px}
-.wr.t{background:#e5f6f9}.wr small{color:var(--mut)}
+.wr.t{background:#f1eafc}.wr small{color:var(--mut)}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
-nav button{flex:1;background:none;color:var(--mut);font-weight:600}nav button.on{color:var(--ink);background:#e5f6f9}
+nav button{flex:1;background:none;color:var(--mut);font-weight:600}nav button.on{color:var(--ink);background:#f1eafc}
 button:focus-visible,input:focus-visible{outline:3px solid var(--c3);outline-offset:2px}
 </style></head><body><main id="app"></main>
 <nav><button data-t="t">Today</button><button data-t="w">Week</button><button data-t="p">Plan</button></nav>
@@ -53,14 +53,14 @@ let D={};try{D=JSON.parse(localStorage.getItem('stride'))||{}}catch(e){}
 const g=d=>D[k(d)]||{};
 function upd(d,p){D[k(d)]={...g(d),...p};try{localStorage.setItem('stride',JSON.stringify(D))}catch(e){}render()}
 const ring=(r,p,c)=>{const L=2*Math.PI*r;return`<circle cx="70" cy="70" r="${r}" fill="none" stroke="${c}" stroke-opacity=".22" stroke-width="13"/><circle cx="70" cy="70" r="${r}" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-Math.min(1,p))}" transform="rotate(-90 70 70)"/>`};
-const head=()=>{const n=num(TODAY);return n<1?`<h1>Stride</h1><p class="sub">Starts Mon, Oct 12. Week 1 goals shown.</p>`:`<h1>Stride</h1><p class="sub">Week ${wk(TODAY)} of 12</p>`};
+const head=()=>{const n=num(TODAY);return n<1?`<h1>Making Moves</h1><p class="sub">Starts Mon, Oct 12. Week 1 goals shown.</p>`:`<h1>Making Moves</h1><p class="sub">Week ${wk(TODAY)} of 12</p>`};
 // ---- views
 function vToday(){const d=TODAY,w=wk(d),t=W[w-1],x=g(d),c=kind(d,w),ph=w<5?0:w<9?1:2,L=lift(c),
 sp=(x.s||0)/t[0],wp=(x.w||0)/t[1];
-let h=head()+`<div class="card hero"><svg width="170" height="170" viewBox="0 0 140 140">${ring(60,sp,'#ff5a6e')+ring(44,wp,'#1fb5cc')+ring(28,L?(x.x?1:0):0,'#7ccf3a')}</svg><div class="lg">
-<div><i class="dot" style="background:#ff5a6e"></i>Steps ${fmt(x.s||0)} / ${fmt(t[0])}</div>
-<div><i class="dot" style="background:#1fb5cc"></i>Water ${x.w||0} / ${t[1]} oz</div>
-<div><i class="dot" style="background:#7ccf3a"></i>${L?(x.x?'Workout done':'Workout to do'):'Rest and walk day'}</div></div></div>
+let h=head()+`<div class="card hero"><svg width="170" height="170" viewBox="0 0 140 140">${ring(60,sp,'#ff4fa3')+ring(44,wp,'#a66bff')+ring(28,L?(x.x?1:0):0,'#ffd23f')}</svg><div class="lg">
+<div><i class="dot" style="background:#ff4fa3"></i>Steps ${fmt(x.s||0)} / ${fmt(t[0])}</div>
+<div><i class="dot" style="background:#a66bff"></i>Water ${x.w||0} / ${t[1]} oz</div>
+<div><i class="dot" style="background:#ffd23f"></i>${L?(x.x?'Workout done':'Workout to do'):'Rest and walk day'}</div></div></div>
 <div class="card"><div class="row"><div>Steps today<small>Goal: ${fmt(t[0])}</small></div><input type="number" inputmode="numeric" aria-label="Steps today" value="${x.s||''}" onchange="upd(TODAY,{s:Math.max(0,+this.value)})"></div>
 <div class="row"><div>Water<small>8 oz per tap</small></div><div><button class="q" aria-label="Remove 8 oz" onclick="upd(TODAY,{w:Math.max(0,(g(TODAY).w||0)-8)})">−</button> <button class="q" aria-label="Add 8 oz" onclick="upd(TODAY,{w:(g(TODAY).w||0)+8})">+</button></div></div>
 <div class="row"><div>Closed all 3 Apple Watch rings<small>Goal: ${t[2]} days this week</small></div><button class="${x.r?'':'off'}" onclick="upd(TODAY,{r:!g(TODAY).r})">${x.r?'Closed':'Not yet'}</button></div></div>
