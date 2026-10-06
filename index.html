@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stride">
+<meta name="theme-color" content="#14303b"><link rel="manifest" href="ERmanifest.json"><link rel="apple-touch-icon" href="ERicon-180.png">
+<title>Stride</title>
+<style>
+:root{--ink:#14303b;--bg:#f2f7f9;--card:#fff;--c1:#ff5a6e;--c2:#7ccf3a;--c3:#1fb5cc;--mut:#667f8b;--line:#dbe6eb}
+*{box-sizing:border-box}body{margin:0;font:16px/1.45 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom))}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:26px;margin:4px 0 0;letter-spacing:-.02em}h2{font-size:18px;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.hero{display:flex;align-items:center;gap:16px;background:var(--ink);color:#fff;border:0}
+.hero svg{flex:none}.lg div{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}.row small{color:var(--mut);display:block}
+input[type=number]{width:96px;font:inherit;padding:8px;border:1px solid var(--line);border-radius:10px;text-align:right}
+button{font:inherit;border:0;border-radius:12px;padding:10px 14px;background:var(--ink);color:#fff}
+button.q{width:42px;padding:10px 0;background:var(--c3);font-weight:700}button.off{background:#e3edf1;color:var(--ink)}
+button.big{width:100%;margin-top:10px;padding:14px;background:var(--c2);color:var(--ink);font-weight:700}
+button.big.done{background:#e3edf1}
+.ex{padding:10px 0;border-top:1px solid var(--line)}.ex b{display:block}.ex span{color:var(--mut);font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 4px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}tr.now{background:#e5f6f9;font-weight:700}
+.d{display:flex;gap:6px}.m{width:12px;height:12px;border-radius:50%;background:#e3edf1}.m.on{background:var(--c2)}
+.wr{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-top:1px solid var(--line);border-radius:8px}
+.wr.t{background:#e5f6f9}.wr small{color:var(--mut)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+nav button{flex:1;background:none;color:var(--mut);font-weight:600}nav button.on{color:var(--ink);background:#e5f6f9}
+button:focus-visible,input:focus-visible{outline:3px solid var(--c3);outline-offset:2px}
+</style></head><body><main id="app"></main>
+<nav><button data-t="t">Today</button><button data-t="w">Week</button><button data-t="p">Plan</button></nav>
+<script>
+// ---- PLAN (edit here to tailor): [avg steps/day, water oz, days all 3 Apple rings closed, strength sessions incl. Sweat440]
+const START=new Date(2026,9,12);
+const W=[[5500,68,3,3],[6000,68,3,3],[6500,72,4,4],[7000,72,4,4],[7500,76,4,4],[8000,76,5,4],[8000,80,4,4],[9000,80,5,4],[10000,80,5,4],[10000,80,6,4],[10000,80,5,4],[10000,80,6,4]];
+const NAME={A:'Lower body + core',B:'Upper body + core',C:'Full body',S:'Sweat440 class',W:'Walk day'};
+const EX={
+A:[['Squat','Bodyweight. When easy, hold a dumbbell or kettlebell at your chest.'],['Glute bridge','Lie on your back, lift hips. When easy, rest a dumbbell on your hips.'],['Reverse lunge','Step back, alternate legs. Add light dumbbells when easy.'],['Banded side steps','Band just above knees, 10 steps each way.'],['Dead bug','Slow and steady, 8 per side.']],
+B:[['Incline push-up','Hands on a counter or sofa, or knees on the floor. Lower the surface over time.'],['Bent-over row','Light dumbbells, squeeze your shoulder blades together.'],['Shoulder press','Standing, light dumbbells. Use a band if dumbbells are too light.'],['Band pull-apart','Arms straight, pull the band wide across your chest.'],['Plank','Hold 20–40 seconds. Drop to knees if needed.']],
+C:[['Kettlebell deadlift','Hinge at the hips, flat back, stand tall.'],['Step-up','Sturdy step or stair, alternate legs.'],['Seated band row','Loop the band around your feet and pull to your ribs.'],['Farmer carry','Hold a weight in each hand and walk 30–40 seconds.'],['Bicycle crunch','Slow, 10 per side.']]};
+const DOSE=['2 sets × 10–12 reps, slow and controlled','3 sets × 10–12 reps','3 sets × 12–15 reps, add the vest or heavier weight'];
+const TIP=['Weeks 1–4: learn the form. Take 3 seconds to lower each rep and stop with 2 reps left.','Weeks 5–8: add a third set. Add weight once every rep feels easy.','Weeks 9–12: add load. Wear the weight vest for squats, lunges, step-ups and carries.'];
+// ---- helpers
+const TODAY=new Date();let tab='t';
+const fmt=n=>n.toLocaleString('en-US'),k=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+const day0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+const num=d=>Math.floor(Math.round((day0(d)-START)/864e5)/7)+1,wk=d=>Math.max(1,Math.min(12,num(d)));
+const kind=(d,w)=>({1:'A',3:'B',5:'S'})[d.getDay()]||(d.getDay()==6&&w>=3?'C':'W');
+const lift=c=>'ABC'.includes(c)||c=='S';
+let D={};try{D=JSON.parse(localStorage.getItem('stride'))||{}}catch(e){}
+const g=d=>D[k(d)]||{};
+function upd(d,p){D[k(d)]={...g(d),...p};try{localStorage.setItem('stride',JSON.stringify(D))}catch(e){}render()}
+const ring=(r,p,c)=>{const L=2*Math.PI*r;return`<circle cx="70" cy="70" r="${r}" fill="none" stroke="${c}" stroke-opacity=".22" stroke-width="13"/><circle cx="70" cy="70" r="${r}" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-Math.min(1,p))}" transform="rotate(-90 70 70)"/>`};
+const head=()=>{const n=num(TODAY);return n<1?`<h1>Stride</h1><p class="sub">Starts Mon, Oct 12. Week 1 goals shown.</p>`:`<h1>Stride</h1><p class="sub">Week ${wk(TODAY)} of 12</p>`};
+// ---- views
+function vToday(){const d=TODAY,w=wk(d),t=W[w-1],x=g(d),c=kind(d,w),ph=w<5?0:w<9?1:2,L=lift(c),
+sp=(x.s||0)/t[0],wp=(x.w||0)/t[1];
+let h=head()+`<div class="card hero"><svg width="170" height="170" viewBox="0 0 140 140">${ring(60,sp,'#ff5a6e')+ring(44,wp,'#1fb5cc')+ring(28,L?(x.x?1:0):0,'#7ccf3a')}</svg><div class="lg">
+<div><i class="dot" style="background:#ff5a6e"></i>Steps ${fmt(x.s||0)} / ${fmt(t[0])}</div>
+<div><i class="dot" style="background:#1fb5cc"></i>Water ${x.w||0} / ${t[1]} oz</div>
+<div><i class="dot" style="background:#7ccf3a"></i>${L?(x.x?'Workout done':'Workout to do'):'Rest and walk day'}</div></div></div>
+<div class="card"><div class="row"><div>Steps today<small>Goal: ${fmt(t[0])}</small></div><input type="number" inputmode="numeric" aria-label="Steps today" value="${x.s||''}" onchange="upd(TODAY,{s:Math.max(0,+this.value)})"></div>
+<div class="row"><div>Water<small>8 oz per tap</small></div><div><button class="q" aria-label="Remove 8 oz" onclick="upd(TODAY,{w:Math.max(0,(g(TODAY).w||0)-8)})">−</button> <button class="q" aria-label="Add 8 oz" onclick="upd(TODAY,{w:(g(TODAY).w||0)+8})">+</button></div></div>
+<div class="row"><div>Closed all 3 Apple Watch rings<small>Goal: ${t[2]} days this week</small></div><button class="${x.r?'':'off'}" onclick="upd(TODAY,{r:!g(TODAY).r})">${x.r?'Closed':'Not yet'}</button></div></div>
+<div class="card"><h2>Today: ${NAME[c]}</h2>`;
+if('ABC'.includes(c)){h+=`<p class="sub">Warm up with a 5 minute walk and shoulder and hip circles. ${DOSE[ph]}.</p>`+EX[c].map(e=>`<div class="ex"><b>${e[0]}</b><span>${e[1]}</span></div>`).join('')+`<p class="sub" style="margin-top:12px">${TIP[ph]}</p>`}
+else if(c=='S')h+=`<p class="sub">Sweat440 today. Log it when you finish.</p>`;
+else h+=`<p class="sub">Aim for a 20–30 minute walk and a few minutes of stretching.</p>`;
+if(L)h+=`<button class="big ${x.x?'done':''}" onclick="upd(TODAY,{x:!g(TODAY).x})">${x.x?'Workout done. Tap to undo':'Mark workout done'}</button>`;
+return h+'</div>'}
+function vWeek(){const w=wk(TODAY),t=W[w-1],ws=new Date(START);ws.setDate(ws.getDate()+7*(w-1));
+let st=[],sd=0,rd=0,rows='';
+for(let i=0;i<7;i++){const dd=new Date(ws);dd.setDate(ws.getDate()+i);const x=g(dd),c=kind(dd,w);
+if(x.s)st.push(x.s);if(lift(c)&&x.x)sd++;if(x.r)rd++;
+rows+=`<div class="wr ${k(dd)==k(TODAY)?'t':''}"><div>${dd.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}<small> ${NAME[c]}</small></div><div class="d" aria-hidden="true"><i class="m ${x.s>=t[0]?'on':''}"></i><i class="m ${x.w>=t[1]?'on':''}"></i><i class="m ${lift(c)&&x.x?'on':''}"></i><i class="m ${x.r?'on':''}"></i></div></div>`}
+const av=st.length?Math.round(st.reduce((a,b)=>a+b)/st.length):0;
+return head()+`<div class="card"><h2>This week</h2>
+<div class="row"><div>Average steps<small>Goal ${fmt(t[0])} a day</small></div><b>${fmt(av)}</b></div>
+<div class="row"><div>Strength sessions<small>Includes Sweat440</small></div><b>${sd} / ${t[3]}</b></div>
+<div class="row"><div>Days with all 3 rings</div><b>${rd} / ${t[2]}</b></div></div>
+<div class="card"><h2>Days</h2><small style="color:var(--mut)">Dots: steps, water, workout, rings</small>${rows}</div>`}
+function vPlan(){const w=wk(TODAY);
+return head()+`<div class="card"><h2>Weekly goals</h2><table><tr><th>Wk</th><th>Starts</th><th>Steps</th><th>Lifts</th><th>Water</th><th>Rings</th></tr>`+W.map((t,i)=>{const s=new Date(START);s.setDate(s.getDate()+7*i);return`<tr class="${i+1==w?'now':''}"><td>${i+1}</td><td>${s.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td><td>${fmt(t[0])}</td><td>${t[3]}</td><td>${t[1]}</td><td>${t[2]}</td></tr>`}).join('')+`</table></div>
+<div class="card"><h2>How the lifting builds</h2>${TIP.map(x=>`<p>${x}</p>`).join('')}<p class="sub">Weekly rhythm: Mon lower body, Wed upper body, Fri Sweat440, Sat full body (from week 3). Swap days whenever life happens.</p></div>`}
+function render(){document.getElementById('app').innerHTML={t:vToday,w:vWeek,p:vPlan}[tab]();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab))}
+document.querySelector('nav').onclick=e=>{if(e.target.dataset.t){tab=e.target.dataset.t;render();scrollTo(0,0)}};
+render();if('serviceWorker'in navigator)navigator.serviceWorker.register('ERsw.js').catch(()=>{});
+</script></body></html>
